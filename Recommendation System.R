@@ -2,24 +2,19 @@
 
 ##Packaging
 install.packages("arules")
-library(arules)
-
 install.packages("arulesViz")
-library(arulesViz)
-
 install.packages("tidyr")
-library(tidyr)
-
 install.packages("reshape")
-library(reshape)
-
 install.packages("reshape2")
-library(reshape2)
-
 install.packages("tidyverse")
-library(tidyverse)
 
+library(tidyverse)
+library(reshape)
+library(reshape2)
 library(plyr)
+library(tidyr)
+library(arulesViz)
+library(arules)
 
 ##Loading the dataset
 raw_data <- read.table(file.choose(),sep=",")
@@ -33,7 +28,7 @@ rawt_data <- raw_data
 ##Batching the orders
 df_itemList <- ddply(rawt_data,"OrderID", 
                      function(rawt_data)paste(rawt_data$ProductID, 
-                                        collapse = ","))
+                                              collapse = ","))
 df_itemList$OrderID <- NULL
 colnames(df_itemList) <- c("itemList")
 
@@ -81,4 +76,3 @@ summary(myrules)
 ##test_data1 <- dcast(rawt_data, OrderID ~ ProductID, value.var="Quantity",fill=0)
 ##test_data1$OrderID <- as.character(test_data1$OrderID)
 ##test_data1[2:ncol(test_data1)] <- ifelse(test_data1>0,"Yes","No")
-
