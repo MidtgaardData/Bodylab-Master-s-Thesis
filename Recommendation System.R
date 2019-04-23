@@ -1,4 +1,5 @@
-##The following script is based on this guide: https://www.r-bloggers.com/implementing-apriori-algorithm-in-r/
+##The following script is based on this guide: https://www.datacamp.com/community/tutorials/market-basket-analysis-r 
+##For visualization: https://www.r-bloggers.com/implementing-apriori-algorithm-in-r/
 
 ##Packaging
 install.packages("arules")
@@ -32,18 +33,17 @@ df_itemList <- ddply(rawt_data,"OrderID",
 df_itemList$OrderID <- NULL
 colnames(df_itemList) <- c("itemList")
 
-write.csv(df_itemList,"ItemList.csv", row.names = TRUE)
-
+write.csv(df_itemList,"ItemList.csv",quote=FALSE, row.names = FALSE)
 
 ##Performing association rule through algorithm
-txn <- read.transactions(file="ItemList.csv", rm.duplicates = TRUE,format="basket",sep=",",cols=1)
+txn <- read.transactions(file="ItemList.csv", rm.duplicates = TRUE,format="basket",sep=",")
 
-summary(txn)
 txn
+summary(txn)
 
 txn@itemInfo$labels <- gsub("\"","",txn@itemInfo$labels)
 
-basket_rules <- apriori(txn,parameter = list(sup = 0.01, conf = 0.01,target="rules"))
+basket_rules <- apriori(txn,parameter = list(sup = 0.001, conf = 0.8,target="rules"))
 
 ##Detaching potential conflict and inspecting
 if(sessionInfo()['basePkgs']=="tm" | sessionInfo()['otherPkgs']=="tm"){
