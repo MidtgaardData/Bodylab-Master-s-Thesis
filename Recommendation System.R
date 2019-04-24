@@ -8,6 +8,7 @@ install.packages("tidyr")
 install.packages("reshape")
 install.packages("reshape2")
 install.packages("tidyverse")
+install.packages("dplyr")
 
 library(tidyverse)
 library(reshape)
@@ -16,19 +17,31 @@ library(plyr)
 library(tidyr)
 library(arulesViz)
 library(arules)
+library(dplyr)
 
 ##Loading the dataset
-raw_data <- read.table(file.choose(),sep=",")
+setwd("C:/Users/morte/OneDrive/Skrivebord")
+raw_data <- read.table("analyse_orderlines_full (5).txt",sep=",")
+
+##Loading lookupliste
+lookup_data <- read.table("Lookupliste.csv",sep=",",header=TRUE)
+lookup_names <- c("V2","V3")
+colnames(lookup_data) <- lookup_names
+raw_data <- left_join(raw_data,lookup_data,by="V2")
 
 ##Wrangling the data
-raw_data[,3:6] <- NULL
+raw_data[,2:6] <- NULL
 names <- c("OrderID","ProductID")
 colnames(raw_data) <- names
 rawt_data <- raw_data
 
+raws_data <- subset(rawt_data, rawt_data$ProductID!="Not Grouped")
+raw2_data <- subset(raws_data, raws_data$ProductID!="FreeBee")
+raw3_data <- subset(raws_data, raw2_data$ProductID!="Freebee")
+
 ##Batching the orders
-df_itemList <- ddply(rawt_data,"OrderID", 
-                     function(rawt_data)paste(rawt_data$ProductID, 
+df_itemList <- ddply(raw3_data,"OrderID", 
+                     function(raw3_data)paste(raw3_data$ProductID, 
                                               collapse = ","))
 df_itemList$OrderID <- NULL
 colnames(df_itemList) <- c("itemList")
